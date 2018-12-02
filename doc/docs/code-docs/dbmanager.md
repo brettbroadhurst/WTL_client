@@ -1,17 +1,17 @@
 # DBMANAGER Class
 
-dbmanager class is a custom class that provides functions to 
+The dbmanager class provides functions to:
 
-- add a page : add page to database and save it locally 
+- **Add a page** to database and save it locally 
 
-- delete a page : delete a page from database and from filesystem
+- **Update a page** feature to the user 
 
-- Update page : provide  update page feature to user 
+- **Delete a page** from database and from your filesystem
 
 
-**dbmanager** class inherits **QObject** .
+**dbmanager** class inherits from **QObject**.
 
-Let's look at the available functions provided in **dbmanager.h**
+Let's look at the available functions provided in **dbmanager.h**.
 
 
 ```C++
@@ -37,15 +37,16 @@ Let's look at the available functions provided in **dbmanager.h**
    void png_download(const QStringList &v , const QStringList &n);
 
 ```
-Let's explore each of the functions  provided in **dbmanager.h** one by one 
+Let's explore each of the functions provided in **dbmanager.h** one by one.
 
-##QString dbmanager::add(QString p_url)
+## QString dbmanager::add(QString p_url)
 
-the add function does what it looks like . It will save a page locally and make an entry in database .
+The *add()* function will save a page locally and make an entry in the database.
 
-This function is called from Main.qml file when a user clicks on  *save offline* button .
+This function is called from Main.qml file when a user clicks on the *save offline* button.
 
-Once this function gets it's input  , it will construct a url and call WTL API for the page .  The API will return JSON and it will be parsed by **QJsonObject** 
+Once this function gets input, it will construct a url and call the WTL API for the page.  
+The API will return JSON and it will be parsed by **QJsonObject** 
 
 ```C++
 QJsonObject jsonObj = jsonResponse.object();
@@ -63,39 +64,39 @@ QJsonObject jsonObj = jsonResponse.object();
  page_title = jsonObj["parse"].toObject()["title"].toString();
 ```
 
-Once the desired content is extracted from the JSON 
+Once the desired content is extracted from the JSON:
 
-- Page is saved locally in **WTL_appdata** folder ( Generic location ) as html (save_file function is used to save the file locally)
+- Page is saved locally in **WTL_appdata** folder (Generic location) as html (save_file function is used to save the file locally).
 
-- An entry of the saved page is added in *WTL.DB*. ( add_in_db function is called to make an entry in database)
-
-
-##QString dbmanager::del(QString pageid)
-
-the *del* function is an **Q_INVOKABLE** function which is called when a user wants to delete a page that he has saved locally . This function is pretty straightforward it takes the pageid of page and deletes it from both database and file system .
+- An entry of the saved page is added in *WTL.DB* (add_in_db function is called to make an entry in database).
 
 
-##void dbmanager::deleteAll()
+## QString dbmanager::del(QString pageid)
 
-deleteAll() function deletes all the pages saved locally and remove the entries from database too.
+the *del()* function is an **Q_INVOKABLE** function which is called when a user wants to delete a page that he has saved locally. This function is pretty straightforward it takes the pageid of page and deletes it from both database and file system.
 
 
-##void dbmanager::update()
+## void dbmanager::deleteAll()
 
-update function is an universal update function . It will update every page recursively . 
+The *deleteAll()* function deletes all the pages saved locally and removes the entries from database.
 
-###Working 
-	Every page  has a revid ( revision number ).  When update function is called 
+
+## void dbmanager::update()
+
+The *update()* function is an universal update function that updates every page recursively.  
+
+### Working 
+	Every page has a revid (revision number). When the update function is called:
 
 	- it reads the database and take revid of a page one at a time 
-	- it makes a  call to WTL API and matches the revid with it 
-	- IF there is a change in revid then it removes the page and downloads the updated page .
-	- ELSE IF revid is same it does nothing ( that means page is up-to-date)
+	- it makes a call to WTL API and matches the revid with it 
+	- IF there is a change in revid then it removes the page and downloads the updated page.
+	- ELSE IF revid is same it does nothing (that means page is up-to-date)
 
 
-##void dbmanager::update_page(QString pageid)
+## void dbmanager::update_page(QString pageid)
 
-the *update_page* function updates a single page specified by user . It basically works exactly same as *update()* function but just for a single page .
+The *update_page()* function updates a single page specified by user. It basically works the same as the *update()* function though for a single page, not recursively.
 
 
 	
